@@ -1,0 +1,18 @@
+version: "3.4"
+
+services:
+
+  nginx-edge:
+    build: 
+      context: nginx-edge/.
+      dockerfile: Dockerfile
+    networks:
+      - lb-edge
+    ports:
+      - 80:80
+
+networks:
+  lb-edge:
+    driver: overlay
+    attachable: true
+    #external: true
