@@ -3,16 +3,20 @@ version: "3.4"
 services:
 
   nginx-edge:
+    image: nginx-edge
     build: 
-      context: nginx-edge/.
+      context: ./nginx-edge
       dockerfile: Dockerfile
     networks:
       - lb-edge
     ports:
       - 80:80
+    restart: always
+    deploy:
+     mode: replicated
+     replicas: 1
 
 networks:
   lb-edge:
     driver: overlay
     attachable: true
-    #external: true
