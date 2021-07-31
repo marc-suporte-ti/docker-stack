@@ -1,4 +1,4 @@
-version: "3.4"
+version: '3.4'
 
 services:
 
@@ -30,15 +30,16 @@ services:
     ports:
       - 15672
       - 5672
+      - 61613
     environment:
       - ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
       - DEFAULT_USER=rabbitmq
       - DEFAULT_PASS=rabbitmq
       - DEFAULT_VHOST=core
     restart: always
-    deploy:
-     mode: replicated
-     replicas: 1
+    # deploy:
+    #  mode: replicated
+    #  replicas: 1
 
 volumes:
   rabbit-mq-vol:
