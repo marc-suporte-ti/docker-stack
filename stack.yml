@@ -4,6 +4,7 @@ services:
 
   nginx-edge:
     image: nginx-edge
+    hostname: nginx-edge
     build: 
       context: ./nginx-edge
       dockerfile: Dockerfile
@@ -11,6 +12,27 @@ services:
       - lb-edge
     ports:
       - 80:80
+    restart: always
+    deploy:
+     mode: replicated
+     replicas: 1
+
+  rabbit-mq:
+    image: rabbit-mq
+    hostname: rabbit-mq
+    build: 
+      context: ./rabbit-mq
+      dockerfile: Dockerfile
+    networks:
+      - lb-edge
+    ports:
+      - 15672
+      - 5672
+    environment:
+      - ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
+      - DEFAULT_USER=rabbitmq
+      - DEFAULT_PASS=rabbitmq
+      - DEFAULT_VHOST=core
     restart: always
     deploy:
      mode: replicated
