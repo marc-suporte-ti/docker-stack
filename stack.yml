@@ -23,6 +23,8 @@ services:
     build: 
       context: ./rabbit-mq
       dockerfile: Dockerfile
+    volumes:
+      - rabbit-mq-vol:/var/lib/rabbitmq
     networks:
       - lb-edge
     ports:
@@ -37,6 +39,10 @@ services:
     deploy:
      mode: replicated
      replicas: 1
+
+volumes:
+  rabbit-mq-vol:
+    driver: local
 
 networks:
   lb-edge:
