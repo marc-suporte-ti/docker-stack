@@ -28,18 +28,21 @@ services:
     networks:
       - lb-edge
     ports:
-      - 15672
+      - 15672:15672
       - 5672
       - 61613
+      - 1883
     environment:
-      - ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
-      - DEFAULT_USER=rabbitmq
-      - DEFAULT_PASS=rabbitmq
-      - DEFAULT_VHOST=core
+      - RABBITMQ_ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+      - RABBITMQ_DEFAULT_VHOST=core
+    labels:
+      - NAME=rabbit-mq
     restart: always
-    # deploy:
-    #  mode: replicated
-    #  replicas: 1
+    deploy:
+     mode: replicated
+     replicas: 1
 
 volumes:
   rabbit-mq-vol:
