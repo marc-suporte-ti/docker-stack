@@ -24,7 +24,7 @@ services:
       context: ./rabbit-mq
       dockerfile: Dockerfile
     volumes:
-      - rabbit-mq-vol:/var/lib/rabbitmq
+      - rabbit_mq_vol:/var/lib/rabbitmq
     networks:
       - lb-edge
     ports:
@@ -46,12 +46,6 @@ services:
 
   agent:
     image: portainer/agent
-    environment:
-      # REQUIRED: Should be equal to the service name prefixed by "tasks." when
-      # deployed inside an overlay network
-      AGENT_CLUSTER_ADDR: tasks.agent
-      # AGENT_PORT: 9001
-      # LOG_LEVEL: debug
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
@@ -63,31 +57,26 @@ services:
         constraints: [node.platform.os == linux]
 
   portainer-adm:
-    # image: portainer/portainer:alpine
-    image: portainer/portainer-ce:2.0.0
+    image: portainer/portainer-ce
     command: -H tcp://tasks.agent:9001 --tlsskipverify
-    volumes:
-      - portainer-adm-vol:/data
-    environment:
-      - VIRTUAL_HOST=portainer.localhost.com
-      - VIRTUAL_PORT=9000
     ports:
-      - 8000
-      - 9000
+      - "9000:9000"
+      - "8000:8000"
+    volumes:
+      - portainer_data_vol:/data
     networks:
-      - lb-edge
       - agent_network
+      - lb-edge
     deploy:
       mode: replicated
       replicas: 1
       placement:
         constraints: [node.role == manager]
 
-
 volumes:
-  rabbit-mq-vol:
+  rabbit_mq_vol:
     driver: local
-  portainer-adm-vol:
+  portainer_data_vol:
     driver: local
 
 networks:
