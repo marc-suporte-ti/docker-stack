@@ -73,6 +73,7 @@ services:
       - VIRTUAL_PORT=9000
     ports:
       - 8000
+      - 9000
     networks:
       - lb-edge
       - agent_network
