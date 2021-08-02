@@ -27,11 +27,11 @@ services:
       - rabbit_mq_vol:/var/lib/rabbitmq
     networks:
       - lb-edge
-    ports:
-      - 15672
-      - 5672
-      - 61613:61613
-      - 1883:1883
+    # ports:
+    #   - 15672
+    #   - 5672
+    #   - 61613:61613
+    #   - 1883:1883
     environment:
       - RABBITMQ_ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
       - RABBITMQ_DEFAULT_USER=rabbitmq
@@ -60,9 +60,9 @@ services:
     image: portainer/portainer-ce
     hostname: portainer-adm
     command: -H tcp://tasks.agent:9001 --tlsskipverify
-    ports:
-      - 9000
-      - 8000
+    # ports:
+    #   - 9000
+    #   - 8000
     volumes:
       - portainer_data_vol:/data
     networks:
