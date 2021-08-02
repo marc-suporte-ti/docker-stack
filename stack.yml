@@ -29,9 +29,9 @@ services:
       - lb-edge
     ports:
       - 15672
-      - 5672
-      - 61613
-      - 1883
+      - 5672:5672
+      - 61613:61613
+      - 1883:1883
     environment:
       - RABBITMQ_ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
       - RABBITMQ_DEFAULT_USER=rabbitmq
