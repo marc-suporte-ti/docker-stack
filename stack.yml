@@ -13,9 +13,10 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 5672:5672
-      - 61613:61613
-      - 1883:1883
+      - 5672:5672 #rabbit
+      - 61613:61613 #rabbit
+      - 1883:1883 #rabbit
+      - 6379:6379 #redis
     restart: always
     deploy:
      mode: replicated
@@ -43,6 +44,41 @@ services:
      mode: replicated
      replicas: 1
 
+  redis_service:
+    image: redis_service
+    hostname: redis_service
+    build: 
+      context: ./redis_service
+      dockerfile: Dockerfile
+    networks:
+      - lb-edge
+    labels:
+      - NAME=redis_service
+    restart: always
+    deploy:
+     mode: replicated
+     replicas: 1
+
+  # keycloak_service:
+  #   image: keycloak_service
+  #   hostname: keycloak_service
+  #   build: 
+  #     context: ./keycloak_service
+  #     dockerfile: Dockerfile
+  #   networks:
+  #     - lb-edge
+  #   environment:
+  #     DB_VENDOR: ORACLE
+  #     DB_ADDR: 223.223.2.140
+  #     DB_PORT: 1521
+  #     DB_DATABASE: DESV12
+  #     DB_USER: SYSTEM
+  #     DB_PASSWORD: oracle
+  #     KEYCLOAK_USER: admin
+  #     KEYCLOAK_PASSWORD: Pa55w0rd
+  #   volumes:
+  #     - ./jdbc:/opt/jboss/keycloak/modules/system/layers/base/com/oracle/jdbc/main/driver
+
   agent:
     image: portainer/agent
     volumes:
@@ -59,9 +95,6 @@ services:
     image: portainer/portainer-ce
     hostname: portainer-adm
     command: -H tcp://tasks.agent:9001 --tlsskipverify
-    # ports:
-    #   - 9000
-    #   - 8000
     volumes:
       - portainer_data_vol:/data
     networks:
