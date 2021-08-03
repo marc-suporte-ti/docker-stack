@@ -69,6 +69,8 @@ services:
     build: 
       context: ./keycloak_service
       dockerfile: Dockerfile
+    volumes:
+      - keycloak_data_vol:/opt/jboss/keycloak/modules/system/layers/base/com/oracle/jdbc/main/driver
     networks:
       - lb-edge
     labels:
@@ -82,8 +84,10 @@ services:
       DB_PASSWORD: oracle
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: Pa55w0rd
-    volumes:
-      - keycloak_data_vol:/opt/jboss/keycloak/modules/system/layers/base/com/oracle/jdbc/main/driver
+    restart: always
+    deploy:
+     mode: replicated
+     replicas: 1
 
   agent:
     image: portainer/agent
