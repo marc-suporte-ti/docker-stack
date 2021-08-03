@@ -14,6 +14,8 @@ services:
       - 80:80
       - 443:443
       - 5672:5672
+      - 61613:61613
+      - 1883:1883
     restart: always
     deploy:
      mode: replicated
