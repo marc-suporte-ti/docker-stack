@@ -23,11 +23,12 @@ services:
      replicas: 1
 
   rabbit-service:
-    image: rabbit-service
+    image: redis:alpine
+    # image: rabbit-service
     hostname: rabbit-service
-    build: 
-      context: ./rabbit-service
-      dockerfile: Dockerfile
+    # build: 
+    #   context: ./rabbit-service
+    #   dockerfile: Dockerfile
     volumes:
       - rabbit_mq_vol:/var/lib/rabbitmq
     networks:
