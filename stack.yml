@@ -2,11 +2,11 @@ version: '3.4'
 
 services:
 
-  nginx-edge:
-    image: nginx-edge
-    hostname: nginx-edge
+  nginx_edge_service:
+    image: nginx_edge_service
+    hostname: nginx_edge_service
     build: 
-      context: ./nginx-edge
+      context: ./nginx_edge_service
       dockerfile: Dockerfile
     networks:
       - lb-edge
@@ -17,6 +17,8 @@ services:
       - 61613:61613 #rabbit
       - 1883:1883 #rabbit
       - 6379:6379 #redis
+    labels:
+      - NAME=nginx_edge_service
     restart: always
     deploy:
      mode: replicated
