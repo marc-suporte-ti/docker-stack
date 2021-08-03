@@ -81,7 +81,7 @@ services:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: Pa55w0rd
     volumes:
-      - ./jdbc:/opt/jboss/keycloak/modules/system/layers/base/com/oracle/jdbc/main/driver
+      - keycloak_data_vol:/opt/jboss/keycloak/modules/system/layers/base/com/oracle/jdbc/main/driver
 
   agent:
     image: portainer/agent
@@ -118,6 +118,8 @@ volumes:
   portainer_data_vol:
     driver: local
   redis_data_vol:
+    driver: local
+  keycloak_data_vol:
     driver: local
 
 networks:
