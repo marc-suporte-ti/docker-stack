@@ -71,6 +71,8 @@ services:
       dockerfile: Dockerfile
     networks:
       - lb-edge
+    labels:
+      - NAME=keycloak_service
     environment:
       DB_VENDOR: ORACLE
       DB_ADDR: 223.223.2.140
