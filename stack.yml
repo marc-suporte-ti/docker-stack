@@ -63,25 +63,25 @@ services:
      mode: replicated
      replicas: 1
 
-  # keycloak_service:
-  #   image: keycloak_service
-  #   hostname: keycloak_service
-  #   build: 
-  #     context: ./keycloak_service
-  #     dockerfile: Dockerfile
-  #   networks:
-  #     - lb-edge
-  #   environment:
-  #     DB_VENDOR: ORACLE
-  #     DB_ADDR: 223.223.2.140
-  #     DB_PORT: 1521
-  #     DB_DATABASE: DESV12
-  #     DB_USER: SYSTEM
-  #     DB_PASSWORD: oracle
-  #     KEYCLOAK_USER: admin
-  #     KEYCLOAK_PASSWORD: Pa55w0rd
-  #   volumes:
-  #     - ./jdbc:/opt/jboss/keycloak/modules/system/layers/base/com/oracle/jdbc/main/driver
+  keycloak_service:
+    image: keycloak_service
+    hostname: keycloak_service
+    build: 
+      context: ./keycloak_service
+      dockerfile: Dockerfile
+    networks:
+      - lb-edge
+    environment:
+      DB_VENDOR: ORACLE
+      DB_ADDR: 223.223.2.140
+      DB_PORT: 1521
+      DB_DATABASE: DESV12
+      DB_USER: SYSTEM
+      DB_PASSWORD: oracle
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: Pa55w0rd
+    volumes:
+      - ./jdbc:/opt/jboss/keycloak/modules/system/layers/base/com/oracle/jdbc/main/driver
 
   agent:
     image: portainer/agent
