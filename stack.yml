@@ -54,12 +54,11 @@ services:
         constraints: [node.platform.os == linux]
 
   portainer-adm:
-    image: portainer/portainer-ce
+    image: portainer-adm
     hostname: portainer-adm
-    command: -H tcp://tasks.agent:9001 --tlsskipverify
-    # ports:
-    #   - 9000
-    #   - 8000
+    build: 
+      context: ./portainer-adm
+      dockerfile: Dockerfile
     volumes:
       - portainer_data_vol:/data
     networks:
