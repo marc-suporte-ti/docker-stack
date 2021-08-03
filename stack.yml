@@ -59,6 +59,7 @@ services:
     build: 
       context: ./portainer-adm
       dockerfile: Dockerfile
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
     volumes:
       - portainer_data_vol:/data
     networks:
