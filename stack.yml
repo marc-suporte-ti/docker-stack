@@ -22,11 +22,11 @@ services:
      mode: replicated
      replicas: 1
 
-  rabbit-mq:
-    image: rabbit-mq
-    hostname: rabbit-mq
+  rabbit-service:
+    image: rabbit-service
+    hostname: rabbit-service
     build: 
-      context: ./rabbit-mq
+      context: ./rabbit-service
       dockerfile: Dockerfile
     volumes:
       - rabbit_mq_vol:/var/lib/rabbitmq
@@ -38,7 +38,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=rabbitmq
       - RABBITMQ_DEFAULT_VHOST=core
     labels:
-      - NAME=rabbit-mq
+      - NAME=rabbit-service
     restart: always
     deploy:
      mode: replicated
@@ -47,9 +47,12 @@ services:
   redis_service:
     image: redis_service
     hostname: redis_service
+    command: redis-server --requirepass Redis2019!
     build: 
       context: ./redis_service
       dockerfile: Dockerfile
+    volumes:
+      - redis_data_vol:/data
     networks:
       - lb-edge
     labels:
@@ -112,6 +115,8 @@ volumes:
   rabbit_mq_vol:
     driver: local
   portainer_data_vol:
+    driver: local
+  redis_data_vol:
     driver: local
 
 networks:
