@@ -23,12 +23,11 @@ services:
      replicas: 1
 
   rabbit-service:
-    image: redis:alpine
-    # image: rabbit-service
+    image: rabbit-service
     hostname: rabbit-service
-    # build: 
-    #   context: ./rabbit-service
-    #   dockerfile: Dockerfile
+    build: 
+      context: ./rabbit-service
+      dockerfile: Dockerfile
     volumes:
       - rabbit_mq_vol:/var/lib/rabbitmq
     networks:
@@ -46,12 +45,13 @@ services:
      replicas: 1
 
   redis_service:
-    image: redis_service
+    image: redis:alpine
+    # image: redis_service
     hostname: redis_service
     command: redis-server --requirepass Redis2019!
-    build: 
-      context: ./redis_service
-      dockerfile: Dockerfile
+    # build: 
+    #   context: ./redis_service
+    #   dockerfile: Dockerfile
     volumes:
       - redis_data_vol:/data
     networks:
