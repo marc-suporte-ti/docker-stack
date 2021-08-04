@@ -17,6 +17,7 @@ services:
       - 61613:61613 #rabbit
       - 1883:1883 #rabbit
       - 6379:6379 #redis
+      - 1414:1414 #ibm-mq
     labels:
       - NAME=nginx_edge_service
     deploy:
