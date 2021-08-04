@@ -1,6 +1,7 @@
 version: '3.9'
 
 services:
+
   nginx_edge_service:
     image: nginx_edge_service:latest
     hostname: nginx_edge_service
@@ -28,6 +29,7 @@ services:
       - agent
       - portainer-adm
       - organizr_service
+      - ibmmq_service
 
   rabbit_service:
     image: rabbit_service:latest
@@ -143,7 +145,26 @@ services:
     labels:
       - NAME=organizr_service      
     volumes:
-      - organizr_data_vol:/config        
+      - organizr_data_vol:/config   
+      
+  ibmmq_service:
+    image: ibmmq_service
+    hostname: ibmmq_service
+    build:
+      context: ./rabbit_service
+      dockerfile: Dockerfile
+    networks:
+      - lb-edge
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=QM.IIB01.DES
+      - MQ_ADMIN_PASSWORD=mq_dev123
+      - MQSNOAUT=yes
+    labels:
+      - NAME=ibmmq_service
+    deploy:
+     mode: replicated
+     replicas: 1
 
 volumes:
   rabbit_mq_vol:
