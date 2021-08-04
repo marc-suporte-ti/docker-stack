@@ -1,9 +1,8 @@
-version: '3.4'
+version: '3.9'
 
 services:
-
   nginx_edge_service:
-    image: nginx_edge_service
+    image: nginx_edge_service:latest
     hostname: nginx_edge_service
     build: 
       context: ./nginx_edge_service
@@ -19,13 +18,19 @@ services:
       - 6379:6379 #redis
     labels:
       - NAME=nginx_edge_service
-    restart: always
     deploy:
      mode: replicated
      replicas: 1
+    depends_on:
+      - rabbit_service
+      - redis_service
+      - keycloak_service
+      - agent
+      - portainer-adm
+      - organizr_service
 
   rabbit_service:
-    image: rabbit_service
+    image: rabbit_service:latest
     hostname: rabbit_service
     build: 
       context: ./rabbit_service
@@ -41,40 +46,45 @@ services:
       - RABBITMQ_DEFAULT_VHOST=core
     labels:
       - NAME=rabbit_service
-    restart: always
     deploy:
      mode: replicated
      replicas: 1
 
   redis_service:
-    image: redis:alpine
-    # image: redis_service
+    image: redis_service
     hostname: redis_service
     command: redis-server --requirepass Redis2019!
-    # build: 
-    #   context: ./redis_service
-    #   dockerfile: Dockerfile
+    build: 
+      context: ./redis_service
+      dockerfile: Dockerfile
     volumes:
       - redis_data_vol:/data
     networks:
       - lb-edge
     labels:
       - NAME=redis_service
-    restart: always
     deploy:
      mode: replicated
      replicas: 1
 
   keycloak_service:
-    image: keycloak_service
+    image: keycloak_service:latest
     hostname: keycloak_service
     build: 
       context: ./keycloak_service
       dockerfile: Dockerfile
-    volumes:
-      - keycloak_data_vol:/opt/jboss/keycloak/modules/system/layers/base/com/oracle/jdbc/main/driver
+    command:
+      [
+        '-b',
+        '0.0.0.0',
+        '-Dkeycloak.profile.feature.upload_scripts=enabled',
+        '-Dkeycloak.migration.action=import',
+        '-Dkeycloak.migration.provider=dir',
+        '-Dkeycloak.migration.dir=/opt/jboss/keycloak/realm-config',
+        '-Dkeycloak.migration.strategy=IGNORE_EXISTING', #OVERWRITE_EXISTING 
+      ]        
     networks:
-      - lb-edge
+      - lb-edge      
     labels:
       - NAME=keycloak_service
     environment:
@@ -82,11 +92,10 @@ services:
       DB_ADDR: 223.223.2.140
       DB_PORT: 1521
       DB_DATABASE: DESV12
-      DB_USER: SYSTEM
-      DB_PASSWORD: oracle
+      DB_USER: TD_KEYCLOAK
+      DB_PASSWORD: TD      
       KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: Pa55w0rd
-    restart: always
+      KEYCLOAK_PASSWORD: admin
     deploy:
      mode: replicated
      replicas: 1
@@ -120,6 +129,22 @@ services:
       placement:
         constraints: [node.role == manager]
 
+  organizr_service:
+    hostname: organizr_service
+    image: organizr/organizr:latest
+    restart: always
+    user: root
+    environment:
+      TZ: 'America/Sao_Paulo'
+      PGID: 1001
+      PUID: 1001
+    networks:
+      - lb-edge
+    labels:
+      - NAME=organizr_service      
+    volumes:
+      - organizr_data_vol:/config        
+
 volumes:
   rabbit_mq_vol:
     driver: local
@@ -127,8 +152,8 @@ volumes:
     driver: local
   redis_data_vol:
     driver: local
-  keycloak_data_vol:
-    driver: local
+  organizr_data_vol:
+    driver: local    
 
 networks:
   lb-edge:
