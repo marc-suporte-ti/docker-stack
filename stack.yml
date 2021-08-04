@@ -19,8 +19,8 @@ services:
       - 6379:6379 #redis
       - 15672:15672 #ibm-mq
       - 1414:1414 #ibm-mq
-      - 1883:1883 #ibm-mq
-      - 61613:61613 #ibm-mq
+      # - 1884:1883 #ibm-mq
+      # - 61613:61613 #ibm-mq
     labels:
       - NAME=nginx_edge_service
     deploy:
