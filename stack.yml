@@ -171,25 +171,25 @@ services:
      mode: replicated
      replicas: 1
 
-  vault_service:
-      image: vault_service
-      hostname: vault_service
-      build:
-        context: ./vault_service
-        dockerfile: Dockerfile
-      networks:
-        - lb-edge                  
-      volumes:
-        - vault_data_vol_file:/vault/file:rw
-        - vault_data_vol_config:/vault/config:rw
-      cap_add:
-        - IPC_LOCK
-      entrypoint: vault server -config=/vault/config/vault.json     
-      labels:
-        - NAME=vault_service
-      deploy:
-        mode: replicated
-        replicas: 1      
+  # vault_service:
+  #     image: vault_service
+  #     hostname: vault_service
+  #     build:
+  #       context: ./vault_service
+  #       dockerfile: Dockerfile
+  #     networks:
+  #       - lb-edge                  
+  #     volumes:
+  #       - vault_data_vol_file:/vault/file:rw
+  #       - vault_data_vol_config:/vault/config:rw
+  #     cap_add:
+  #       - IPC_LOCK
+  #     entrypoint: vault server -config=/vault/config/vault.json     
+  #     labels:
+  #       - NAME=vault_service
+  #     deploy:
+  #       mode: replicated
+  #       replicas: 1      
 
 volumes:
   rabbit_mq_vol:
