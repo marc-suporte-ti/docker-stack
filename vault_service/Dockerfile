@@ -2,4 +2,4 @@ FROM vault:latest
 
 EXPOSE 8200
 
-COPY ./config /vault/config/
+#COPY ./config /vault/config/

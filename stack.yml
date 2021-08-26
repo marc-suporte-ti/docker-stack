@@ -13,15 +13,23 @@ services:
     ports:
       - 80:80
       - 443:443
-      - 5672:5672 #rabbit
-      - 61613:61613 #rabbit
-      - 1883:1883 #rabbit
-      - 6379:6379 #redis
-      - 1414:1414 #ibm-mq
-      - 9443:9443 #ibm-mq
-      # - 1884:1883 #ibm-mq
+      - 5672:5672     #rabbit
+      - 61613:61613   #rabbit
+      - 1883:1883     #rabbit
+      - 6379:6379     #redis
+      - 1414:1414     #ibm-mq
+      - 9443:9443     #ibm-mq
+      # - 1884:1883   #ibm-mq
       # - 61613:61613 #ibm-mq
-      - 8200:8200 #vault
+      - 8200:8200     #vault
+      - 5775:5775/udp #jeager
+      - 6831:6831/udp #jeager
+      - 6832:6832/udp #jeager
+      - 5778:5778     #jeager
+      - 16686:16686   #jeager
+      - 14268:14268   #jeager
+      - 14250:14250   #jeager
+      - 9411:9411     #jeager
     labels:
       - NAME=nginx_edge_service
     deploy:
@@ -177,20 +185,37 @@ services:
       build:
         context: ./vault_service
         dockerfile: Dockerfile
+      environment:
+        VAULT_ADDR: "http://0.0.0.0:8200"
+        VAULT_DEV_ROOT_TOKEN_ID: "vault-plaintext-root-token"        
       networks:
         - lb-edge                  
-      volumes:
-        - vault_data_vol_file:/vault/file:rw
-        - vault_data_vol_config:/vault/config:rw
+      #volumes:
+      #  - vault_data_vol_file:/vault/file:rw
+      #  - vault_data_vol_config:/vault/config:rw
       cap_add:
         - IPC_LOCK
-      entrypoint: vault server -config=/vault/config/vault.json     
+      entrypoint: vault server -config=/vault/config/vault.json -dev-root-token-id= -dev-listen-address=0.0.0.0:8200    
       labels:
         - NAME=vault_service
       deploy:
         mode: replicated
-        replicas: 1      
+        replicas: 1    
 
+  jaeger_service:
+    hostname: jaeger_service
+    image: jaegertracing/all-in-one:latest
+    restart: always
+    user: root
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: 9411 
+    networks:
+      - lb-edge
+    labels:
+      - NAME=jaeger_service      
+    volumes:
+      - organizr_data_vol:/config
+      
 volumes:
   rabbit_mq_vol:
     driver: local
